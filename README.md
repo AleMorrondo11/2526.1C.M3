@@ -32,8 +32,7 @@ mantiene una plantilla procedural sin clases ni decoradores.
 - `memory_engine.py`: motor gráfico listo para usar. **No se modifica.**
 - `game.py`: punto de entrada que conecta el motor con la lógica del alumno.
 - `logic.py`: plantilla con todas las funciones `TODO` que debes completar.
-- `logic_solution.py` / `game_solution.py`: referencia interna. Úsalos solo para
-  comparar resultados; no forman parte de la entrega.
+
 
 ## Ejercicios
 Completa las funciones que aparecen en `logic.py` respetando los tipos y los
@@ -75,3 +74,8 @@ mantener la comunicación con el motor).
 - Al final del desarrollo ejecuta varias partidas completas para asegurarte de
   que `has_won` detecta correctamente el final de la partida y que los
   contadores de movimientos y parejas son coherentes.
+
+## Rubrica
+ - Se valorará el uso de código bien escrito
+ - Se valorará el uso de pylint y de ruff.
+ - Se valorará el uso correcto de las recomendaciones vistas en teoría
