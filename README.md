@@ -1,81 +1,221 @@
-# Memory-M3
-En este tercer hito construiremos un juego de parejas clásico usando `pygame`. La
-idea es centrarnos en una lógica muy procedural: listas, diccionarios, bucles y
-condicionales. Toda la parte visual ya está resuelta en un motor que expone una
-sencilla API basada en funciones.
+# Memory M3 - Juego de Memoria
 
-> Cómo entregar: cread un fork del repositorio, implementad la lógica en
-> `logic.py`, subid el código resultante a vuestro repositorio y comprimídlo en
-> `memory-"Nombre del grupo".zip` para subirlo al formulario correspondiente.
+Un juego interactivo de memoria clásico desarrollado en Python con interfaz gráfica usando Pygame. El objetivo es encontrar todas las parejas de cartas ocultas en el menor número de movimientos posible.
 
-## Requisitos previos
-1. Python 3.10 o superior.
-2. Instalar `pygame` si aún no lo tienes:
-   ```bash
-   python -m pip install pygame
-   ```
-3. Ejecuta el motor con:
-   ```bash
-   python game.py --rows 4 --cols 4
-   ```
-   Ajusta `--rows` y `--cols` para probar diferentes tamaños (recuerda que el
-   número total de casillas debe ser par).
+---
 
-## Contexto
-El alumnado debe ocuparse exclusivamente de la parte "clásica" del juego:
-preparar los datos iniciales, gestionar qué cartas pueden revelarse y decidir si
-hay pareja o no. La interfaz incluida (`memory_engine.py`) representa el tablero,
-lanza el bucle principal y llama a funciones del módulo `logic`. De este modo se
-mantiene una plantilla procedural sin clases ni decoradores.
+## Descripción General
 
-## Ficheros en esta carpeta
-- `memory_engine.py`: motor gráfico listo para usar. **No se modifica.**
-- `game.py`: punto de entrada que conecta el motor con la lógica del alumno.
-- `logic.py`: plantilla con todas las funciones `TODO` que debes completar.
+**Memory M3** es una implementación del clásico juego de memoria donde:
+- Las cartas se encuentran inicialmente ocultas en un tablero
+- Haces clic en dos cartas para revelarlas
+- Si las cartas coinciden (parejas), permanecen visibles y se marcan como encontradas
+- Si no coinciden, se vuelven a ocultar y debes intentar recordar dónde estaban
+- El juego termina cuando encuentras todas las parejas
+
+---
+
+## Requisitos
+
+- **Python 3.10+**
+- **Pygame** (para la interfaz gráfica)
+
+---
+
+## Cómo Ejecutar el Juego
+
+### Opción 1: Ejecución por defecto (4x4)
+```bash
+python game.py
+```
+
+### Opción 2: Personalizar dimensiones del tablero
+```bash
+# Tablero de 6x6 (36 casillas = 18 parejas)
+python game.py --rows 6 --cols 6
+
+# Tablero de 3x4 (12 casillas = 6 parejas)
+python game.py --rows 3 --cols 4
+
+# Tablero de 8x8 (64 casillas = 32 parejas)
+python game.py --rows 8 --cols 8
+```
+
+### Argumentos disponibles
+- `--rows`: Número de filas del tablero (por defecto: 4)
+- `--cols`: Número de columnas del tablero (por defecto: 4)
+
+---
+
+## Cómo Jugar
+
+1. **Inicia el juego** ejecutando el comando anterior
+2. **Haz clic en las cartas** para revelarlas
+3. **Encuentra las parejas** haciendo clic en dos cartas que coincidan
+4. **Memoriza la posición** de las cartas para obtener mejor puntuación
+5. **Gana el juego** cuando encuentres todas las parejas
+6. **Presiona ESC** para salir del juego en cualquier momento
+
+### Información en pantalla
+- **Movimientos**: Número total de clics realizados
+- **Parejas encontradas**: Contador de parejas coincidentes
+- **Estados de las cartas**:
+  - **Oculta** (gris oscuro)
+  - **Visible** (azul claro) - se muestra brevemente
+  - **Encontrada** (verde)
+
+---
 
 
-## Ejercicios
-Completa las funciones que aparecen en `logic.py` respetando los tipos y los
-nombres de las claves descritas. Se recomienda resolverlas en este orden:
+## 🔧 Descripción de los Módulos
 
-1. **`build_symbol_pool`** *(1 punto)*: construye la lista plana con todos los
-   símbolos necesarios para rellenar el tablero. Cada símbolo debe aparecer dos
-   veces. Puedes empezar con letras y números, y barajar al final con
-   `random.shuffle`.
-2. **`create_game`** *(2 puntos)*: a partir del resultado del paso anterior,
-   construye el tablero (lista de listas de cartas) y devuelve un diccionario con
-   los contadores iniciales: ``pending``, ``moves``, ``matches``, ``total_pairs``
-   y las dimensiones.
-3. **`reveal_card`** *(2 puntos)*: valida las coordenadas recibidas, evita
-   revelar la misma carta dos veces y añade las posiciones a ``pending``. Solo
-   puede haber dos cartas visibles a la vez.
-4. **`resolve_pending`** *(3 puntos)*: cuando haya dos cartas en ``pending``,
-   comprueba si coinciden. Si hay pareja marca el estado como `found` y suma un
-   punto al contador de ``matches``; en caso contrario vuelve a ocultarlas. En
-   ambos casos incrementa ``moves`` y vacía ``pending``.
-5. **`has_won`** *(1 punto)*: devuelve `True` cuando las parejas encontradas
-   alcancen a `total_pairs`.
+### `game.py`
+- **Punto de entrada** del programa
+- Parsea argumentos de línea de comandos (`--rows`, `--cols`)
+- Inicializa la interfaz gráfica
+- Lanza el bucle principal del juego
 
-Cada carta del tablero es un diccionario con las claves `symbol` y `state`. Los
-únicos valores permitidos en `state` son las constantes `STATE_HIDDEN`,
-`STATE_VISIBLE` y `STATE_FOUND` (reutiliza las que vienen en la plantilla para
-mantener la comunicación con el motor).
+**Funciones principales:**
+- `parse_args()`: Procesa los argumentos de la línea de comandos
+- `main()`: Inicializa y ejecuta el juego
 
-## Consejos
-- Mantén la lógica pura: evita variables globales fuera de las estructuras
-  pedidas y céntrate en manipular la información del tablero.
-- Usa bucles `for` y listas auxiliares para recorrer y modificar el tablero;
-  intenta no recurrir a comprensiones complejas para que el código sea más
-  legible.
-- Valida siempre las coordenadas recibidas; si están fuera del tablero no deben
-  producir errores.
-- Experimenta con distintos tamaños (`--rows 2 --cols 6`, `--rows 6 --cols 6`,
-  etc.) para verificar que tus funciones escalan bien.
-- Al final del desarrollo ejecuta varias partidas completas para asegurarte de
-  que `has_won` detecta correctamente el final de la partida y que los
-  contadores de movimientos y parejas son coherentes.
+### `logic.py`
+Contiene toda la lógica del juego:
 
-## Rubrica
- - Se valorará el uso de código bien escrito
- - Se valorará el uso de pylint y de ruff.
- - Se valorará el uso correcto de las recomendaciones vistas en teoría
+- **`build_symbol_pool(filas, columnas)`**: Genera una lista de símbolos donde cada uno aparece exactamente dos veces para formar parejas. Retorna la lista mezclada aleatoriamente.
+
+- **`create_game(filas, columnas)`**: Inicializa el estado del juego con un tablero válido. Retorna un diccionario con todo lo necesario para gestionar la partida.
+
+- **`reveal_card(juego, posicion)`**: Revela una carta en la posición indicada. Valida las coordenadas y gestiona el estado pendiente.
+
+- **`resolve_pending(juego)`**: Verifica si las cartas pendientes forman una pareja. Si coinciden, las marca como encontradas; si no, las oculta nuevamente.
+
+- **`has_won(juego)`**: Comprueba si se ha ganado el juego (todas las parejas encontradas).
+
+**Estados de las cartas:**
+- `STATE_HIDDEN`: Carta oculta (no visible)
+- `STATE_VISIBLE`: Carta visible (mostrada temporalmente)
+- `STATE_FOUND`: Carta encontrada (pareja completa)
+
+### `memory_engine.py`
+Motor gráfico que **NO se modifica**:
+- Renderiza el tablero usando Pygame
+- Maneja eventos del ratón y teclado
+- Delega toda la lógica al módulo `logic`
+- Muestra animaciones y estados visuales
+- Implementa la clase `MemoryUI` que controla la interfaz
+
+---
+
+## Estados del Juego
+
+El estado del juego se mantiene en un diccionario con:
+```python
+{
+    "board": [lista 2D de cartas],      # Tablero de cartas
+    "pending": [lista de posiciones],   # Cartas en espera de validación
+    "moves": int,                       # Contador de movimientos
+    "matches": int,                     # Parejas encontradas
+    "total_pairs": int,                 # Total de parejas a encontrar
+    "rows": int,                        # Número de filas
+    "cols": int                         # Número de columnas
+}
+```
+
+### Estructura de una Carta
+```python
+{
+    "symbol": str,      # Símbolo de la carta (ej: "0", "1", "2", etc.)
+    "state": str        # Estado: STATE_HIDDEN, STATE_VISIBLE o STATE_FOUND
+}
+```
+
+---
+
+## 🎨 Paleta de Colores
+
+| Elemento | Color RGB | Uso |
+|----------|-----------|-----|
+| Fondo | (12, 17, 29) | Fondo del tablero |
+| Grilla | (18, 98, 151) | Líneas divisorias |
+| Carta Oculta | (55, 71, 79) | Cartas no reveladas |
+| Carta Visible | (197, 202, 233) | Cartas reveladas |
+| Carta Encontrada | (67, 160, 71) | Parejas completadas |
+| Texto | (235, 239, 243) | Información en pantalla |
+
+---
+
+## ⌨️ Atajos de Teclado
+
+| Tecla | Acción |
+|-------|--------|
+| **ESC** | Salir del juego |
+| **Click izquierdo** | Seleccionar carta |
+
+---
+
+
+## Cómo Funciona la Mecánica del Juego
+
+### Flujo de Juego
+
+1. **Inicialización**:
+   - Se genera un pool de símbolos con pares
+   - Se crea el tablero y se distribuyen los símbolos
+   - Todas las cartas comienzan ocultas
+
+2. **Turno del Jugador**:
+   - El jugador hace clic en una carta → se revela
+   - El jugador hace clic en otra carta → se revela
+   - Se valida si forman pareja
+
+3. **Resolución**:
+   - **Pareja correcta**: Las cartas se marcan como encontradas (permanecen visibles)
+   - **Pareja incorrecta**: Las cartas se ocultan nuevamente
+   - Se incrementa el contador de movimientos
+
+4. **Final del Juego**:
+   - Se verifica si todas las parejas han sido encontradas
+   - Se muestra el número de movimientos realizados
+
+---
+
+## Solución de Problemas
+
+### Error: "ModuleNotFoundError: No module named 'pygame'"
+**Solución**: Instala pygame
+```bash
+pip install pygame
+```
+
+### Error: "El tablero debe tener un número par de casillas"
+**Solución**: Asegúrate de que filas × columnas sea un número par
+```bash
+# Incorrecto (3x3 = 9, impar)
+python game.py --rows 3 --cols 3
+
+# Correcto (3x4 = 12, par)
+python game.py --rows 3 --cols 4
+```
+
+## Información de Desarrollo
+
+### Requisitos previos
+- Python 3.10 o superior
+- pip (gestor de paquetes de Python)
+
+### Ambiente de desarrollo recomendado
+```bash
+# Instalar dependencias
+pip install pygame
+```
+
+## Soporte
+
+Si encuentras problemas:
+1. Verifica que Python 3.10+ esté correctamente instalado
+2. Instala las dependencias: `pip install pygame`
+3. Asegúrate de ejecutar el comando desde la carpeta correcta
+4. Revisa que el número total de casillas sea par (filas × columnas)
+5. Comprueba que no hay procesos pesados consumiendo recursos
+
